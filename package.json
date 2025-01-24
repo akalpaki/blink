@@ -1,0 +1,19 @@
+{
+  "name": "blink",
+  "version": "0.0.0",
+  "description": "A curl wrapper",
+  "repository": {
+    "type": "git",
+    "url": "github.com/akalpaki/blink"
+  },
+  "license": "ISC",
+  "author": "Alexios Kalpakidis",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "typescript": "^5.7.3"
+  }
+}
