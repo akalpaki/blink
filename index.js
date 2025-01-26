@@ -22,22 +22,22 @@ const getArgs = () =>
         return args;
     }, {});
 
+const curl = (url, method) => {
+    const call = spawn("curl", [
+        url,
+        method,
+    ])
+
+    call.stdout.on("data", (data) => {
+        console.log(data);
+    })
+
+    call.on("close", (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
+}
+
 const args = getArgs();
 
-console.log(args)
 
-const curl = spawn("curl", { url: args.url });
-
-console.log(curl)
-
-curl.stdout.on('data', (data) => {
-    console.log(data);
-});
-
-curl.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-});
-
-curl.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
-});
+curl(args.url, args.method)
