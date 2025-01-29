@@ -11,9 +11,13 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
+    "blessed": "^0.1.81",
     "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
