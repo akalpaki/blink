@@ -13,6 +13,14 @@ export function curl(
     headers = undefined,
     body = undefined,
 ) {
+    let args = [];
+    if (typeof headers != 'undefined') {
+      headers.forEach((header) => {
+        const h = 
+        args.push(`${header.name}`);
+        
+      }) 
+    }
     const call = spawn(curl,)
 
 }
