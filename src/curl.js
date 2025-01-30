@@ -33,13 +33,15 @@ export function curl(
 
         args.push(url)
 
-        const call = spawn("curl", args)
+        const call = spawn("curl", args) // NOTE: properly return results of curl
 
         call.on("close", (code) => {
+            console.log("close", code)
             resolve(code)
         })
 
         call.on("error", (err) => {
+            console.log("error", err)
             reject(err)
         })
     })

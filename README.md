@@ -1,5 +1,8 @@
 # Blink
 
+Blink is a TUI wrapper around `curl` which aims to provide
+and easy and comfortable way to utilize `curl` for API testing and more.
+
 Idea: write a frontend for curl that can do cool stuff
 
 Goals:
