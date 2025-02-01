@@ -1,48 +1,73 @@
 import { spawn } from "node:child_process"
 
-export function curl(
+/**
+ * @param {string} method 
+ * @param {string} url 
+ * @param {object} body 
+    */
+export function makeRequest(
     method,
     url,
     headers,
     body,
 ) {
     return new Promise((resolve, reject) => {
-        const args = [];
+        const args = getArgs(method, url, headers, body);
+        const res = [];
+        let err = ""
 
-        if (typeof method !== 'undefined') {
-            args.push(`-X ${method}`)
-        }
+        const call = spawn("curl", args);
 
-        if (typeof headers !== 'undefined') {
-            headers.forEach((header) => {
-                const headerLine = `${header.name}`
-                if (header.value) {
-                    headerLine + `:${header.value}`
-                } else {
-                    headerLine + ";"
-                }
+        call.stdout.on("data", (data) => {
+            console.log(data.toString());
+            res.push(data);
+        });
 
-                args.push(`-H "${headerLine}"`); // NOTE: escape the quote marks?
-            })
-        }
+        call.stderr.on("data", (data) => {
+            err += data;
+        });
 
-        if (typeof body !== 'undefined') {
-            const encodedBody = JSON.stringify(body)
-            args.push(`-d ${encodedBody}`)
-        }
+        call.on("close", () => {
+            if (err !== "") {
+                reject(err)
+            }
+            resolve(res.join())
+        });
 
-        args.push(url)
+    });
+}
 
-        const call = spawn("curl", args) // NOTE: properly return results of curl
+const getArgs = (
+    method,
+    url,
+    headers,
+    body,
+) => {
+    const args = [];
 
-        call.on("close", (code) => {
-            console.log("close", code)
-            resolve(code)
-        })
+    if (typeof method !== 'undefined') {
+        args.push(`-X ${method}`);
+    }
 
-        call.on("error", (err) => {
-            console.log("error", err)
-            reject(err)
-        })
-    })
+    if (typeof headers !== 'undefined') {
+        headers.forEach((header) => {
+            const headerLine = `${header.name}`;
+            if (header.value) {
+                headerLine + `:${header.value}`;
+            } else {
+                headerLine + ";";
+            }
+
+            args.push(`-H "${headerLine}"`);
+        });
+    }
+
+    if (typeof body !== 'undefined') {
+        const encodedBody = JSON.stringify(body)
+        args.push(`-d ${encodedBody}`);
+    }
+
+    args.push(url);
+
+    return args
 }
