@@ -30,7 +30,7 @@ const testPut = JSON.stringify({
 describe("Basic usage of curl", () => {
     test("Get request should work", async () => {
         const res = await doFetch({
-            url: testAPIHost + "/ping",
+            url: new URL(testAPIHost + "/ping"),
         })
 
         expect(res.status).toBe(201);
@@ -38,7 +38,7 @@ describe("Basic usage of curl", () => {
 
     test("Post request should work", async () => {
         const res = await doFetch({
-            url: testAPIHost + "/booking",
+            url: new URL(testAPIHost + "/booking"),
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -53,7 +53,7 @@ describe("Basic usage of curl", () => {
 
     test("Put request should work", async () => {
         const postRes = await doFetch({
-            url: testAPIHost + "/booking",
+            url: new URL(testAPIHost + "/booking"),
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -63,7 +63,7 @@ describe("Basic usage of curl", () => {
         });
 
         const authRes = await doFetch({
-            url: testAPIHost + "/auth",
+            url: new URL(testAPIHost + "/auth"),
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -73,7 +73,7 @@ describe("Basic usage of curl", () => {
         })
 
         const putRes = await doFetch({
-            url: testAPIHost + `/booking/${postRes.body.bookingid}`,
+            url: new URL(testAPIHost + `/booking/${postRes.body.bookingid}`),
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -89,7 +89,7 @@ describe("Basic usage of curl", () => {
 
     test("Delete request should work", async () => {
         const authRes = await doFetch({
-            url: testAPIHost + "/auth",
+            url: new URL(testAPIHost + "/auth"),
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -99,7 +99,7 @@ describe("Basic usage of curl", () => {
         })
 
         const postRes = await doFetch({
-            url: testAPIHost + "/booking",
+            url: new URL(testAPIHost + "/booking"),
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -109,7 +109,7 @@ describe("Basic usage of curl", () => {
         })
 
         const deleteRes = await doFetch({
-            url: testAPIHost + `/booking/${postRes.body.bookingid}`,
+            url: new URL(testAPIHost + `/booking/${postRes.body.bookingid}`),
             method: "DELETE",
             headers: {
                 "content-type": "application/json",
@@ -123,7 +123,7 @@ describe("Basic usage of curl", () => {
 
     test("Patch request should work", async () => {
         const authRes = await doFetch({
-            url: testAPIHost + "/auth",
+            url: new URL(testAPIHost + "/auth"),
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -133,7 +133,7 @@ describe("Basic usage of curl", () => {
         })
 
         const postRes = await doFetch({
-            url: testAPIHost + "/booking",
+            url: new URL(testAPIHost + "/booking"),
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -143,7 +143,7 @@ describe("Basic usage of curl", () => {
         })
 
         const patchRes = await doFetch({
-            url: testAPIHost + `/booking/${postRes.body.bookingid}`,
+            url: new URL(testAPIHost + `/booking/${postRes.body.bookingid}`),
             method: "PATCH",
             headers: {
                 "content-type": "application/json",

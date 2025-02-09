@@ -1,33 +1,16 @@
 import { XMLParser } from "fast-xml-parser";
+import { RequestOptions, Response } from "./types";
 /** @module blink/client 
  *  Provides a wrapper around the standard lib node clients for http and https.
  *  @author akalpaki
  * */
 
-/**
- * @typedef header
- * @property {(number|string|Array<string>)} header
- * */
-
-/**
- * @typedef requestOptions
- * @type {Object}
- * @property {string} method 
- * @property {URL} url 
- * @property {Object.<string,header>} headers 
- * @property {(Object|null)} body
- * */
-
-/**
- * @typedef response
- * @type {Object}
- * */
 
 /**
  * Make an HTTP request
  * @param {requestOptions} opts
  * */
-export async function doFetch(opts) {
+export async function doFetch(opts: RequestOptions): Promise<Response> {
     const req = new Request(opts.url, {
         method: opts.method,
         body: opts.body,
@@ -37,7 +20,11 @@ export async function doFetch(opts) {
     try {
         const res = await fetch(req)
 
-        const contentTypeHeader = res.headers.get("content-type").split(" ")[0].slice(0, -1)
+        let contentTypeHeader = res.headers.get("content-type")
+        if (contentTypeHeader !== null && contentTypeHeader !== undefined) {
+            contentTypeHeader = res.headers.get("content-type")!.split(" ")[0].slice(0, -1)
+        }
+
         let body;
         let mediaType;
 
@@ -67,6 +54,13 @@ export async function doFetch(opts) {
             mediaType: mediaType
         };
     } catch (err) {
-        throw new Error(err)
+        let message;
+        if (err instanceof Error) {
+            message = err.message;
+        } else {
+            message = String(err);
+        }
+
+        throw new Error(message);
     }
 }
