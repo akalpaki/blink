@@ -37,31 +37,29 @@ export async function doFetch(opts) {
     try {
         const res = await fetch(req)
 
+        const contentTypeHeader = res.headers.get("content-type").split(" ")[0].slice(0, -1)
         let body;
         let mediaType;
-        switch (res.headers.get("content-type")) {
+
+        switch (contentTypeHeader) {
             case "application/json":
                 body = await res.json();
                 mediaType = "json"
                 break;
             case "application/xml":
-                const plaintext = await res.text();
-                const parser = new XMLParser();
-                body = parser.parse(plaintext);
-                mediaType = "xml"
+                const plaintextXML = await res.text();
+                const xmlParser = new XMLParser();
+                body = xmlParser.parse(plaintextXML);
+                mediaType = "xml";
                 break;
-            case "text/html":
-            // TODO: parse html
-
+            case "text/plain":
+                body = res.text();
+                mediaType = "text";
+                break;
             default:
-                throw new Error(`unimplemented content type processing: ${res.headers.get("content-type")}`)
-
+                throw new Error(`unimplemented content type processing: ${contentTypeHeader}`)
         }
 
-        // NOTE: think about how to return body.
-        // You probably cannot return the body as is, since it's a stream.
-        // Maybe we can copy it to a buffer and leave the caller to perform upstream processing?
-        // We can use a buffer to pipe the response to 
         return {
             status: res.status,
             headers: res.headers,
