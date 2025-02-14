@@ -1,6 +1,6 @@
 import Database from "better-sqlite3"
 
-import { DataModel, RequestOptions, Response } from "./types";
+import { RequestData, RequestOptions, Response, ResponseData } from "./types";
 import { doFetch } from "./curl";
 
 export class RequestProcessor {
@@ -18,30 +18,6 @@ export class RequestProcessor {
     public async doRequest(req: RequestOptions): Promise<Response> {
         return new Promise(async (resolve, reject) => {
             try {
-                const data: DataModel = {
-                    url: req.url.toString(),
-                    method: "",
-                }
-
-                if (typeof req.name !== "undefined") {
-                    data.name = req.name;
-                }
-
-                if (typeof req.method !== "undefined") {
-                    data.method = req.method
-                }
-
-                if (typeof req.headers !== "undefined") {
-                    data.headers = req.headers
-                }
-
-                if (typeof req.body !== "undefined") {
-                    data.body = req.body
-                }
-
-                const id = this.saveData(data)
-                req.id = id as bigint
-
                 const res = await doFetch(req);
 
                 resolve(res);
@@ -63,10 +39,21 @@ body TEXT,
 mediaType TEXT,
 created_at TEXT,
 updated_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS responses(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+request_id INTEGER,
+headers TEXT,
+body TEXT,
+status_code INTEGER,
+mediaType TEXT,
+created_at TEXT,
+updated_at TEXT
 );`)
     }
 
-    private saveData(data: DataModel): number | bigint {
+    private saveRequestData(data: RequestData): number | bigint {
         const stmt = this.conn.prepare(`INSERT INTO requests(name,url,method,headers,body,mediaType) VALUES (?,?,?,?,?,?) RETURNING id`)
 
         const res = stmt.run(

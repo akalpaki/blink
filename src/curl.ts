@@ -53,8 +53,10 @@ export async function doFetch(opts: RequestOptions): Promise<Response> {
             body: body,
             mediaType: mediaType
         };
+
     } catch (err) {
         let message;
+
         if (err instanceof Error) {
             message = err.message;
         } else {
