@@ -1,6 +1,8 @@
 import pkg from "blessed";
 const { screen, box } = pkg;
 
+// TODO: FIX THIS ONCE INTERNALS ARE DONE
+
 
 const scr = screen({
     smartCSR: true,

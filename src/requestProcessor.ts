@@ -1,6 +1,6 @@
 import Database from "better-sqlite3"
 
-import { RequestData, RequestOptions, Response, ResponseData } from "./types";
+import { formatRequestData, formatResponseData, RequestData, RequestOptions, Response, ResponseData } from "./types";
 import { doFetch } from "./curl";
 
 export class RequestProcessor {
@@ -18,7 +18,14 @@ export class RequestProcessor {
     public async doRequest(req: RequestOptions): Promise<Response> {
         return new Promise(async (resolve, reject) => {
             try {
+                const reqId = this.saveRequestData(formatRequestData(req))
+                req.id = reqId as bigint
+
                 const res = await doFetch(req);
+
+                if (req.saveResponse) {
+                    this.saveResponseData(formatResponseData(res))
+                }
 
                 resolve(res);
             } catch (err) {
@@ -54,7 +61,7 @@ updated_at TEXT
     }
 
     private saveRequestData(data: RequestData): number | bigint {
-        const stmt = this.conn.prepare(`INSERT INTO requests(name,url,method,headers,body,mediaType) VALUES (?,?,?,?,?,?) RETURNING id`)
+        const stmt = this.conn.prepare(`INSERT INTO requests(name,url,method,headers,body,mediaType,created_at) VALUES (?,?,?,?,?,?,?) RETURNING id`)
 
         const res = stmt.run(
             data.name,
@@ -62,10 +69,23 @@ updated_at TEXT
             data.method,
             data.headers,
             data.body,
-            data.mediaType,
+            new Date().toISOString(),
         )
 
         return res.lastInsertRowid
+    }
+
+    private saveResponseData(data: ResponseData): void {
+        const stmt = this.conn.prepare(`INSERT INTO responses(request_id, headers, body, status_code, mediaType, created_at) VALUES (?,?,?,?,?,?)`)
+
+        stmt.run(
+            data.requestId,
+            data.headers,
+            data.body,
+            data.status,
+            data.mediaType,
+            new Date().toISOString(),
+        )
     }
 
 }

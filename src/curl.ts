@@ -1,15 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
+
 import { RequestOptions, Response } from "./types";
-/** @module blink/client 
- *  Provides a wrapper around the standard lib node clients for http and https.
- *  @author akalpaki
- * */
 
-
-/**
- * Make an HTTP request
- * @param {requestOptions} opts
- * */
 export async function doFetch(opts: RequestOptions): Promise<Response> {
     const req = new Request(opts.url, {
         method: opts.method,
