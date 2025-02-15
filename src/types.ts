@@ -1,7 +1,9 @@
-import Database from "better-sqlite3"
+export type Config = {
+    storeLocation?: string,
+}
 
 export type RequestOptions = {
-    id?: bigint,
+    id?: number,
     name?: string
     method?: string,
     url: URL,
@@ -11,7 +13,7 @@ export type RequestOptions = {
 }
 
 export type Response = {
-    id?: bigint,
+    id?: number,
     status: number,
     headers: Headers,
     mediaType: string,
@@ -19,7 +21,7 @@ export type Response = {
 }
 
 export type RequestData = {
-    id?: bigint,
+    id?: number,
     name?: string,
     url: string,
     method?: string,
@@ -30,8 +32,8 @@ export type RequestData = {
 }
 
 export type ResponseData = {
-    id?: bigint,
-    requestId: bigint,
+    id?: number,
+    requestId: number,
     headers?: HeadersInit,
     body?: any | null,
     status: number,
@@ -58,10 +60,10 @@ export function formatRequestData(req: RequestOptions): RequestData {
     return data
 }
 
-export function formatResponseData(res: Response): ResponseData {
+export function formatResponseData(reqId: number, res: Response): ResponseData {
     let data: ResponseData = {
         id: res.id ? res.id : undefined,
-        requestId: res.id as bigint,
+        requestId: reqId,
         status: res.status,
         mediaType: res.mediaType,
     }
