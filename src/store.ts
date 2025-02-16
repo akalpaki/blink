@@ -1,13 +1,16 @@
 import Database from "better-sqlite3"
-import { RequestData, ResponseData } from "./types";
 
-// NOTE: I think requests should be upserts for both request and response data
+import { RequestData, ResponseData } from "./types";
+import { StoreError } from "./error";
+
+// TODO: make save operations upserts
 export class Store {
     private static defaultLocation = ":memory:";
     private static createTablesQuery = `
     CREATE TABLE IF NOT EXISTS requests(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         url TEXT,
+        name TEXT,
         method TEXT,
         media_type TEXT,
         headers TEXT,
@@ -17,7 +20,7 @@ export class Store {
     );
     CREATE TABLE IF NOT EXISTS responses(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        request_id INTEGER,
+        request_id INTEGER NOT NULL REFERENCES requests ON UPDATE CASCADE ON DELETE CASCADE,
         status_code INTEGER,
         media_type TEXT,
         headers TEXT,
@@ -34,7 +37,7 @@ export class Store {
     headers,
     body,
     created_at
-    ) VALUES (?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?)
 `;
     private static insertResponse = `
     INSERT INTO responses(
@@ -44,8 +47,33 @@ export class Store {
     headers,
     body,
     created_at
-    ) VALUES (?, ?, ?, ?, ?, ?);
+    ) VALUES (?, ?, ?, ?, ?, ?)
 `;
+    private static getRequest = `
+    SELECT (
+    id,
+    name,
+    url,
+    method,
+    headers,
+    body,
+    created_at,
+    updated_at
+    ) FROM requests WHERE id = ?;
+`
+    private static getResponse = `
+    SELECT (
+    id,
+    request_id,
+    status_code,
+    media_type,
+    headers,
+    body,
+    created_at,
+    updated_at
+    ) FROM responses WHERE request_id = ?;
+`
+
     #conn;
 
     constructor(fileLocation = Store.defaultLocation) {
@@ -64,13 +92,20 @@ export class Store {
     public storeRequest(data: RequestData): number {
         const stmt = this.#conn.prepare(Store.insertRequest);
 
+        const timestamp = new Date().toISOString();
+        let headers = "";
+
+        if (typeof data.headers !== "undefined") {
+            headers = JSON.stringify(data.headers);
+        }
+
         const res = stmt.run(
             data.name,
             data.url,
             data.method,
-            data.headers,
+            headers,
             data.body,
-            new Date().toISOString(),
+            timestamp,
         )
 
         return res.lastInsertRowid as number
@@ -79,13 +114,52 @@ export class Store {
     public storeResponse(data: ResponseData): void {
         const stmt = this.#conn.prepare(Store.insertResponse)
 
+        const timestamp = new Date().toISOString();
+        let headers = ""
+
+        if (typeof data.headers !== "undefined") {
+            headers = JSON.stringify(data.headers);
+        }
+
         stmt.run(
             data.requestId,
             data.status,
             data.mediaType,
-            data.headers,
+            headers,
             data.body,
-            new Date().toISOString(),
+            timestamp,
         )
+    }
+
+    public getRequest(id: number): RequestData {
+        const stmt = this.#conn.prepare(Store.getRequest);
+
+        const res = stmt.get(id);
+
+        if (!this.isRequestData(res)) {
+            throw new StoreError("request not found");
+        }
+
+        return res;
+    }
+
+    public getResponseByReqId(reqId: number): ResponseData {
+        const stmt = this.#conn.prepare(Store.getResponse);
+
+        const res = stmt.get(reqId);
+
+        if (!this.isResponseData(res)) {
+            throw new StoreError("response not found")
+        }
+
+        return res
+    }
+
+    private isRequestData(value: unknown): value is RequestData {
+        return (value as RequestData).method !== undefined;
+    }
+
+    private isResponseData(value: unknown): value is ResponseData {
+        return (value as ResponseData).mediaType !== undefined;
     }
 }
