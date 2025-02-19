@@ -40,4 +40,10 @@ describe("Basic API of store", () => {
 
         testDatabase.storeResponse(testResponse);
     })
+
+    test("you can retreive a request", () => {
+        const requestID = testDatabase.storeRequest(testRequest);
+
+        const request = testDatabase.getRequest(requestID);
+    })
 })

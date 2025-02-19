@@ -1,7 +1,10 @@
-import { XMLParser } from "fast-xml-parser";
+//import { XMLParser } from "fast-xml-parser";
 
 import { RequestOptions, Response } from "./types";
 
+// TODO: 
+// - create tests for XML use case before declaring support for it
+// - implement support for endpoints returning HTML
 export async function doFetch(opts: RequestOptions): Promise<Response> {
     const req = new Request(opts.url, {
         method: opts.method,
@@ -25,18 +28,18 @@ export async function doFetch(opts: RequestOptions): Promise<Response> {
                 body = await res.json();
                 mediaType = "json"
                 break;
-            case "application/xml":
-                const plaintextXML = await res.text();
-                const xmlParser = new XMLParser();
-                body = xmlParser.parse(plaintextXML);
-                mediaType = "xml";
-                break;
+            //case "application/xml":
+            //    const plaintextXML = await res.text();
+            //    const xmlParser = new XMLParser();
+            //    body = xmlParser.parse(plaintextXML);
+            //    mediaType = "xml";
+            //    break;
             case "text/plain":
-                body = res.text();
+                body = await res.text();
                 mediaType = "text";
                 break;
             default:
-                throw new Error(`unimplemented content type processing: ${contentTypeHeader}`)
+                throw new Error(`${contentTypeHeader} handling not implemented`)
         }
 
         return {
