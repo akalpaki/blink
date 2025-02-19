@@ -12,21 +12,20 @@ export class Store {
         url TEXT,
         name TEXT,
         method TEXT,
-        media_type TEXT,
         headers TEXT,
         body TEXT,
-        created_at TEXT,
-        updated_at TEXT
+        createdAt TEXT,
+        updatedAt TEXT
     );
     CREATE TABLE IF NOT EXISTS responses(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         request_id INTEGER NOT NULL REFERENCES requests ON UPDATE CASCADE ON DELETE CASCADE,
-        status_code INTEGER,
-        media_type TEXT,
+        status INTEGER,
+        mediaType TEXT,
         headers TEXT,
         body TEXT,
-        created_at TEXT,
-        updated_at TEXT
+        createdAt TEXT,
+        updatedAt TEXT
     );
 `;
     private static insertRequest = `
@@ -36,42 +35,42 @@ export class Store {
     method,
     headers,
     body,
-    created_at
+    createdAt
     ) VALUES (?, ?, ?, ?, ?, ?)
 `;
     private static insertResponse = `
     INSERT INTO responses(
     request_id,
-    status_code,
-    media_type,
+    status,
+    mediaType,
     headers,
     body,
-    created_at
+    createdAt
     ) VALUES (?, ?, ?, ?, ?, ?)
 `;
     private static getRequest = `
-    SELECT (
+    SELECT 
     id,
     name,
     url,
     method,
     headers,
     body,
-    created_at,
-    updated_at
-    ) FROM requests WHERE id = ?;
+    createdAt,
+    updatedAt
+    FROM requests WHERE id = ?;
 `
     private static getResponse = `
-    SELECT (
+    SELECT 
     id,
     request_id,
-    status_code,
-    media_type,
+    status,
+    mediaType,
     headers,
     body,
-    created_at,
-    updated_at
-    ) FROM responses WHERE request_id = ?;
+    createdAt,
+    updatedAt
+    FROM responses WHERE request_id = ?;
 `
 
     #conn;
