@@ -1,7 +1,7 @@
 {
   "name": "blink",
   "version": "0.0.0",
-  "description": "A curl wrapper",
+  "description": "An API testing tool",
   "repository": {
     "type": "git",
     "url": "github.com/akalpaki/blink"
@@ -9,7 +9,7 @@
   "license": "ISC",
   "author": "Alexios Kalpakidis",
   "type": "module",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest"
   },

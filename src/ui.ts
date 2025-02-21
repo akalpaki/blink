@@ -1,10 +1,10 @@
-import { screen } from "blessed";
+import blessed from "blessed";
 
 export class MyBase {
     #base;
 
     constructor() {
-        this.#base = screen();
+        this.#base = blessed.screen();
     }
 
     public init() {

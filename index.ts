@@ -1,4 +1,4 @@
-import { MyBase } from "./src/ui";
+import { MyBase } from "./src/ui.ts";
 
 const app = new MyBase();
 
