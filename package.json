@@ -11,7 +11,8 @@
   "type": "module",
   "main": "index.ts",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest",
+    "dev": "node --watch ."
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",

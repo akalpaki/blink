@@ -1,4 +1,4 @@
-import { Base } from "./src/ui/base.ts";
+import { Window } from "./src/ui/window.ts";
 
-const app = new Base();
-app.init();
+const ui = new Window();
+ui.init();
