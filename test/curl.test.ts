@@ -1,5 +1,5 @@
-import { doFetch } from "../src/curl";
 'use strict';
+import { doFetch } from "../src/curl";
 
 const testAPIHost = "https://restful-booker.herokuapp.com"
 

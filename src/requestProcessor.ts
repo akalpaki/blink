@@ -16,20 +16,26 @@ export class RequestProcessor {
     }
 
     public async doRequest(req: RequestOptions): Promise<Response> {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const reqId = this.#store.storeRequest(formatRequestData(req))
+        try {
+            const reqId = this.#store.storeRequest(formatRequestData(req));
 
-                const res = await doFetch(req);
+            const res = await doFetch(req);
 
-                if (req.saveResponse) {
-                    this.#store.storeResponse(formatResponseData(reqId, res))
-                }
+            if (req.saveResponse) {
+                this.#store.storeResponse(formatResponseData(reqId, res));
+            }
 
-                resolve(res);
-            } catch (err) {
-                reject(err)
-            };
-        })
+            return res;
+        } catch (err) {
+            let message;
+
+            if (err instanceof Error) {
+                message = err.message;
+            } else {
+                message = String(err);
+            }
+
+            throw new Error(message);
+        }
     }
 }

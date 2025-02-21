@@ -2,7 +2,7 @@
 
 import { RequestOptions, Response } from "./types";
 
-// TODO: 
+// TODO:
 // - create tests for XML use case before declaring support for it
 // - implement support for endpoints returning HTML
 export async function doFetch(opts: RequestOptions): Promise<Response> {
@@ -10,14 +10,17 @@ export async function doFetch(opts: RequestOptions): Promise<Response> {
         method: opts.method,
         body: opts.body,
         headers: opts.headers,
-    })
+    });
 
     try {
-        const res = await fetch(req)
+        const res = await fetch(req);
 
-        let contentTypeHeader = res.headers.get("content-type")
+        let contentTypeHeader = res.headers.get("content-type");
         if (contentTypeHeader !== null && contentTypeHeader !== undefined) {
-            contentTypeHeader = res.headers.get("content-type")!.split(" ")[0].slice(0, -1)
+            contentTypeHeader = res.headers
+                .get("content-type")!
+                .split(" ")[0]
+                .slice(0, -1);
         }
 
         let body;
@@ -26,7 +29,7 @@ export async function doFetch(opts: RequestOptions): Promise<Response> {
         switch (contentTypeHeader) {
             case "application/json":
                 body = await res.json();
-                mediaType = "json"
+                mediaType = "json";
                 break;
             //case "application/xml":
             //    const plaintextXML = await res.text();
@@ -39,16 +42,17 @@ export async function doFetch(opts: RequestOptions): Promise<Response> {
                 mediaType = "text";
                 break;
             default:
-                throw new Error(`${contentTypeHeader} handling not implemented`)
+                throw new Error(
+                    `${contentTypeHeader} handling not implemented`,
+                );
         }
 
         return {
             status: res.status,
             headers: res.headers,
             body: body,
-            mediaType: mediaType
+            mediaType: mediaType,
         };
-
     } catch (err) {
         let message;
 
