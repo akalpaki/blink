@@ -4,9 +4,7 @@ export class Frame {
     #box;
     constructor() {
         this.#box = blessed.box({
-            top: "left",
-            left: "center",
-            width: "100%",
+            width: "25%",
             height: "100%",
             border: {
                 type: "line",
@@ -14,6 +12,11 @@ export class Frame {
             style: {
                 fg: "white",
             },
+            shadow: false,
         });
+    }
+
+    box() {
+        return this.#box;
     }
 }

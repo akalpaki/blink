@@ -1,6 +1,6 @@
 //import { XMLParser } from "fast-xml-parser";
 
-import { RequestOptions, Response } from "./types";
+import { RequestOptions, Response } from "./types/request";
 
 // TODO:
 // - create tests for XML use case before declaring support for it

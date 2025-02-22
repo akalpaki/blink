@@ -1,12 +1,8 @@
-import {
-    Config,
-    formatRequestData,
-    formatResponseData,
-    RequestOptions,
-    Response,
-} from "./types";
 import { doFetch } from "./curl";
 import { Store } from "./store";
+import { Config } from "./types/config";
+import { RequestOptions, Response } from "./types/request";
+import { formatRequestData, formatResponseData } from "./types/utils";
 
 export class RequestProcessor {
     #store: Store;

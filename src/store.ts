@@ -1,7 +1,7 @@
-import Database from "better-sqlite3"
+import Database from "better-sqlite3";
 
-import { RequestData, ResponseData } from "./types";
-import { StoreError } from "./error";
+import { StoreError } from "./types/error";
+import { RequestData, ResponseData } from "./types/model";
 
 // TODO: make save operations upserts
 export class Store {
@@ -59,7 +59,7 @@ export class Store {
     createdAt,
     updatedAt
     FROM requests WHERE id = ?;
-`
+`;
     private static getResponse = `
     SELECT 
     id,
@@ -71,7 +71,7 @@ export class Store {
     createdAt,
     updatedAt
     FROM responses WHERE request_id = ?;
-`
+`;
 
     #conn;
 
@@ -82,11 +82,11 @@ export class Store {
         this.#conn = new Database(fileLocation);
         this.#conn.pragma("journal_mode = WAL");
         this.setupDB();
-    };
+    }
 
     private setupDB(): void {
         this.#conn.exec(Store.createTablesQuery);
-    };
+    }
 
     public storeRequest(data: RequestData): number {
         const stmt = this.#conn.prepare(Store.insertRequest);
@@ -105,16 +105,16 @@ export class Store {
             headers,
             data.body,
             timestamp,
-        )
+        );
 
-        return res.lastInsertRowid as number
-    };
+        return res.lastInsertRowid as number;
+    }
 
     public storeResponse(data: ResponseData): void {
-        const stmt = this.#conn.prepare(Store.insertResponse)
+        const stmt = this.#conn.prepare(Store.insertResponse);
 
         const timestamp = new Date().toISOString();
-        let headers = ""
+        let headers = "";
 
         if (typeof data.headers !== "undefined") {
             headers = JSON.stringify(data.headers);
@@ -127,7 +127,7 @@ export class Store {
             headers,
             data.body,
             timestamp,
-        )
+        );
     }
 
     public getRequest(id: number): RequestData {
@@ -148,10 +148,10 @@ export class Store {
         const res = stmt.get(reqId);
 
         if (!this.isResponseData(res)) {
-            throw new StoreError("response not found")
+            throw new StoreError("response not found");
         }
 
-        return res
+        return res;
     }
 
     private isRequestData(value: unknown): value is RequestData {

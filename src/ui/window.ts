@@ -7,6 +7,7 @@ export class Window {
     constructor() {
         this.#base = blessed.screen({
             smartCSR: true,
+            dockBorders: true,
         });
         this.#base.title = "blink.";
         this.#base.key(["C-c"], () => {
@@ -29,7 +30,7 @@ export class Window {
         const testFrame = new Frame();
 
         this.#base.append(frame);
-        this.#base.append(testFrame);
+        this.#base.append(testFrame.box());
     }
 
     public init() {
