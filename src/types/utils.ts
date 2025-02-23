@@ -1,3 +1,5 @@
+// Minor: I would propose to put this file into /utils folder since it is not a part of TS signatures.
+
 import { RequestData, RequestOptions, Response, ResponseData } from "./request";
 
 export function formatRequestData(req: RequestOptions): RequestData {
@@ -7,11 +9,13 @@ export function formatRequestData(req: RequestOptions): RequestData {
         method: req.method ? req.method : "GET",
     };
 
-    if (typeof req.headers !== "undefined") {
+    // https://javascript.info/type-conversions#boolean-conversion
+    // since js allows types conversion req.body will be converted into boolean, so we can simplify the code
+    if (req.body) {
         data.headers = req.headers;
     }
 
-    if (typeof req.body !== "undefined" && req.body !== null) {
+    if (req.body) {
         data.body = req.body;
     }
 
