@@ -11,7 +11,7 @@ export function formatRequestData(req: RequestOptions): RequestData {
 
     // https://javascript.info/type-conversions#boolean-conversion
     // since js allows types conversion req.body will be converted into boolean, so we can simplify the code
-    if (req.body) {
+    if (req.headers) {
         data.headers = req.headers;
     }
 
@@ -19,7 +19,20 @@ export function formatRequestData(req: RequestOptions): RequestData {
         data.body = req.body;
     }
 
-    return data;
+    // just find more elegant to add conditional property
+    // https://elvisciotti.medium.com/conditional-adding-object-properties-in-javascript-in-one-line-de97f5de449a
+    return {
+        ...data,
+        // https://elvisciotti.medium.com/conditional-adding-object-properties-in-javascript-in-one-line-de97f5de449a
+        // try to remove !! part and find TS error:
+        // Spread types may only be created from object types.ts(2698)
+        // https://cumsum.wordpress.com/2021/10/10/typescript-spread-types-may-only-be-created-from-object-types/
+        //  so !! is another to convert type to boolean
+        ...(!!req.body && { body: data.body }),
+        ...(!!req.headers && { headers: data.headers }),
+    };
+
+    // return data;
 }
 
 export function formatResponseData(reqId: number, res: Response): ResponseData {
