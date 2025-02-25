@@ -8,11 +8,14 @@ import { RequestOptions, Response } from "./types/request";
 export async function doFetch(opts: RequestOptions): Promise<Response> {
     const req = new Request(opts.url, {
         method: opts.method,
-        body: opts.body,
+        body: opts.body as BodyInit | null | undefined,
         headers: opts.headers,
     });
 
     try {
+        let body;
+        let mediaType;
+
         const res = await fetch(req);
 
         let contentTypeHeader = res.headers.get("content-type");
@@ -22,9 +25,6 @@ export async function doFetch(opts: RequestOptions): Promise<Response> {
                 .split(" ")[0]
                 .slice(0, -1);
         }
-
-        let body;
-        let mediaType;
 
         switch (contentTypeHeader) {
             case "application/json":
@@ -54,13 +54,7 @@ export async function doFetch(opts: RequestOptions): Promise<Response> {
             mediaType: mediaType,
         };
     } catch (err) {
-        let message;
-
-        if (err instanceof Error) {
-            message = err.message;
-        } else {
-            message = String(err);
-        }
+        const message = err instanceof Error ? err.message : String(err);
 
         throw new Error(message);
     }

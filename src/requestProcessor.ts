@@ -2,7 +2,7 @@ import { doFetch } from "./curl";
 import { Store } from "./store";
 import { Config } from "./types/config";
 import { RequestOptions, Response } from "./types/request";
-import { formatRequestData, formatResponseData } from "./types/utils";
+import { requestToModel, responseToModel } from "./utils/typeTransformations";
 
 export class RequestProcessor {
     #store: Store;
@@ -13,12 +13,12 @@ export class RequestProcessor {
 
     public async doRequest(req: RequestOptions): Promise<Response> {
         try {
-            const reqId = this.#store.storeRequest(formatRequestData(req));
+            const reqId = this.#store.storeRequest(requestToModel(req));
 
             const res = await doFetch(req);
 
             if (req.saveResponse) {
-                this.#store.storeResponse(formatResponseData(reqId, res));
+                this.#store.storeResponse(responseToModel(reqId, res));
             }
 
             return res;

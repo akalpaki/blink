@@ -14,14 +14,17 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest",
     "dev": "node --watch ."
   },
+  "engines": {
+    "node": ">=18.18.0"
+  },
   "dependencies": {
+    "@types/blessed": "^0.1.25",
     "better-sqlite3": "^11.8.1",
     "blessed": "^0.1.81",
     "fast-xml-parser": "^4.5.1"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",
-    "@types/blessed": "^0.1.25",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.1",
     "eslint": "^9.21.0",

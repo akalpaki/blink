@@ -1,4 +1,5 @@
 import blessed from "blessed";
+
 import { Frame } from "./frame.ts";
 
 export class Window {
@@ -27,10 +28,13 @@ export class Window {
             },
         });
 
-        const testFrame = new Frame();
+        const testFrame = new Frame({
+            left: "25%",
+        }).box();
 
         this.#base.append(frame);
-        this.#base.append(testFrame.box());
+        this.#base.append(testFrame);
+        this.#base.key(["C-a"], () => testFrame.focus());
     }
 
     public init() {
