@@ -18,11 +18,8 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
-<<<<<<< Updated upstream
     "@types/blessed": "^0.1.25",
-=======
     "@akalpaki/dca": "^1.0.0",
->>>>>>> Stashed changes
     "better-sqlite3": "^11.8.1",
     "blessed": "^0.1.81",
     "fast-xml-parser": "^4.5.1"
