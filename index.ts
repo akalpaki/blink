@@ -1,4 +1,5 @@
-import { Window } from "./src/ui/window.ts";
+import { UI } from "./src/ui/ui.ts";
 
-const ui = new Window();
-ui.init();
+const main = UI();
+
+main.render();

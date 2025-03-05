@@ -1,4 +1,5 @@
 export type FrameOptions = {
+    name: string;
     top?: string;
     left?: string;
     right?: string;
